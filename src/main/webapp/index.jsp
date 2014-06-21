@@ -67,12 +67,22 @@ limitations under the License.
   <link href="/static/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
- <div class="container_fluid">
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="#">OUTCOME | <em>FOR GLASS</em></a>
+    </div>
+  </div>
+</div>
+ <div class="container">
   <div class="row">
+   <p class="lead">
+   Please select a participant to work with.
+   </p>
         <form action="<%= WebUtil.buildUrl(request, "/main") %>" method="post">
                 <input type="hidden" name="operation" value="insertParticipant">
                 <p><button class="btn btn-primary btn-lg btn-block" type="submit">
-                <span class="glyphicon glyphicon-user"></span> John Doe <span class="glyphicon glyphicon-share"style="display:none;"></span></button></p>
+                John Doe</button></p>
         </form>
     </div>
  </div>
