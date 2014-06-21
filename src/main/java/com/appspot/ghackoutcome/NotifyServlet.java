@@ -123,7 +123,11 @@ public class NotifyServlet extends HttpServlet {
         // in place and used the update method, but we wanted to illustrate the
         // patch method here.
         mirrorClient.timeline().patch(notification.getItemId(), itemPatch).execute();
-      } else if (notification.getUserActions().contains(new UserAction().setType("LAUNCH"))) {
+
+          /************TNM***************/
+      } else if (notification.getUserActions().contains(new UserAction().setType("CUSTOM"))) {
+          //TODO: do some stuff
+
         LOG.info("It was a note taken with the 'take a note' voice command. Processing it.");
 
         // Grab the spoken text from the timeline card and update the card with
@@ -138,6 +142,8 @@ public class NotifyServlet extends HttpServlet {
             new MenuItem().setAction("DELETE")));
 
         mirrorClient.timeline().update(timelineItem.getId(), timelineItem).execute();
+
+          /**************************/
       } else {
         LOG.warning("I don't know what to do with this notification, so I'm ignoring it.");
       }

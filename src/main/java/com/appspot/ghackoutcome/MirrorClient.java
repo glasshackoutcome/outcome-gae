@@ -79,6 +79,8 @@ public class MirrorClient {
     // Rewrite "appspot.com" to "Appspot.com" as a workaround for
     // http://b/6909300.
     callbackUrl = callbackUrl.replace("appspot.com", "Appspot.com");
+      //TODO: Change URL
+      //check out: http://stackoverflow.com/questions/20219643/how-i-get-menu-click-event/20272621#20272621
 
     Subscription subscription = new Subscription();
     // Alternatively, subscribe to "locations"
