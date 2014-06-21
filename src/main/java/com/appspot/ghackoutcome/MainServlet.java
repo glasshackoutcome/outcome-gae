@@ -387,14 +387,6 @@ public class MainServlet extends HttpServlet {
 
         //Set templates and vars
     	cover.setHtml(CardUtil.getCardTemplate("participant_cover.html", p.getMap()));
-
-        //Menu items
-        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
-        // Built in actions
-        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
-
-        //Place menulist in the item
-        cover.setMenuItems(menuItemList);
         
         //Type
         cover.setSourceItemId(COVER_CARD);
@@ -419,6 +411,7 @@ public class MainServlet extends HttpServlet {
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
         // Built in actions
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("DELETE"));
 
         //Place menulist in the item
         info.setMenuItems(menuItemList);
@@ -435,6 +428,9 @@ public class MainServlet extends HttpServlet {
 
     	//Bundle uses same pid as id
     	method1.setBundleId(pid);
+    	
+    	//Set readaloud
+    	method1.setSpeakableText(p.getMethodOne());
 
         //Some special maps for the methods
         Map<String, String> methodOne = new HashMap<String, String>();
@@ -447,7 +443,8 @@ public class MainServlet extends HttpServlet {
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
         // Built in actions
-        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("DELETE"));
 
         //Place menulist in the item
         method1.setMenuItems(menuItemList);
@@ -464,6 +461,9 @@ public class MainServlet extends HttpServlet {
 
     	//Bundle uses same pid as id
     	method2.setBundleId(pid);
+    	
+    	//Set readaloud
+    	method2.setSpeakableText(p.getMethodTwo());
 
         //Some special maps for the methods
         Map<String, String> methodTwo = new HashMap<String, String>();
@@ -476,7 +476,8 @@ public class MainServlet extends HttpServlet {
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
         // Built in actions
-        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("DELETE"));
 
         //Place menulist in the item
         method2.setMenuItems(menuItemList);
@@ -493,6 +494,9 @@ public class MainServlet extends HttpServlet {
 
     	//Bundle uses same pid as id
     	method3.setBundleId(pid);
+    	
+    	//Set readaloud
+    	method3.setSpeakableText(p.getMethodThree());
 
         //Some special maps for the methods
         Map<String, String> methodThree = new HashMap<String, String>();
@@ -505,7 +509,8 @@ public class MainServlet extends HttpServlet {
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
         // Built in actions
-        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("DELETE"));
 
         //Place menulist in the item
         method3.setMenuItems(menuItemList);
@@ -522,6 +527,9 @@ public class MainServlet extends HttpServlet {
 
     	//Bundle uses same pid as id
     	safety.setBundleId(pid);
+    	
+    	//Set readaloud
+    	safety.setSpeakableText(p.getEmergInfo());
 
         //Set templates and vars
     	safety.setHtml(CardUtil.getCardTemplate("participant_alerts.html", p.getMap()));
@@ -529,7 +537,8 @@ public class MainServlet extends HttpServlet {
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
         // Built in actions
-        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+        menuItemList.add(new MenuItem().setAction("DELETE"));
 
         //Place menulist in the item
         safety.setMenuItems(menuItemList);
