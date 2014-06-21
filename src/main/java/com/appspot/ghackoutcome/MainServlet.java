@@ -304,7 +304,11 @@ public class MainServlet extends HttpServlet {
     	method3.setBundleId(pid);
     	safety.setBundleId(pid);
 
+    	//Make the cover of the bundle
     	cover.setIsBundleCover(true);
+    	
+    	//Set readaloud
+    	info.setSpeakableText(p.getValuedOutcome());
 
         // Triggers an audible tone when the timeline item is received
         cover.setNotification(new NotificationConfig().setLevel("DEFAULT"));
@@ -329,6 +333,14 @@ public class MainServlet extends HttpServlet {
     	method2.setHtml(CardUtil.getCardTemplate("participant_method.html", methodTwo));
     	method3.setHtml(CardUtil.getCardTemplate("participant_method.html", methodThree));
     	safety.setHtml(CardUtil.getCardTemplate("participant_alerts.html", p.getMap()));
+        
+        //Menu items
+        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        // Built in actions
+        menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+
+        //Place menulist in the item
+        info.setMenuItems(menuItemList);
 
     	// Insert in right order
         MirrorClient.insertTimelineItem(credential, safety);
@@ -337,6 +349,5 @@ public class MainServlet extends HttpServlet {
         MirrorClient.insertTimelineItem(credential, method1);
         MirrorClient.insertTimelineItem(credential, info);
         MirrorClient.insertTimelineItem(credential, cover);
-
     }
 }
