@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -62,25 +64,6 @@ public class MainServlet extends HttpServlet {
                     + "For more cat maintenance tips, tap to view the website!</p>"
                     + "</article>";
 
-    private static final String PARTICIPANT_CARD =
-            "<article>\n" +
-                    "  <figure>\n" +
-                    "    <img src=\"http://w4tr.com/glass/participant.jpg\">\n" +
-                    "  </figure>\n" +
-                    "  <section>\n" +
-                    "    <h1 class=\"text-large\">John Doe</h1>\n" +
-                    "    <p class=\"text-x-small\">\n" +
-                    "      <img class=\"icon-small\" src=\"http://w4tr.com/glass/star-2.png\">\n" +
-                    "      <em>Day Hab Participant</em>\n" +
-                    "    </p>\n" +
-                    "    <hr>\n" +
-                    "<br/>\n" +
-                    "    <p class=\"text-small\">\n" +
-                    "      <span class=\"green\">0/3</span> goals met today.\n" +
-                    "    </p>" +
-                    "  </section>" +
-                    "</article>";
-
     /**
      * Do stuff when buttons on index.jsp are clicked
      */
@@ -113,8 +96,12 @@ public class MainServlet extends HttpServlet {
 
         } else if (req.getParameter("operation").equals("insertParticipant")) {
             LOG.fine("Inserting Participant Timeline Item");
+            Map<String, String> testMap = new HashMap<String, String>();
+            testMap.put("photoURI", "http://w4tr.com/glass/participant.jpg");
+            testMap.put("firstName", "Jon");
+            testMap.put("lastName", "Doe");
             TimelineItem timelineItem = new TimelineItem();
-            timelineItem.setHtml(PARTICIPANT_CARD);
+            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", testMap));
 
             // Triggers an audible tone when the timeline item is received
             timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
