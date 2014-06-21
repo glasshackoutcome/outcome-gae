@@ -71,8 +71,8 @@ limitations under the License.
   <div class="row">
         <form action="<%= WebUtil.buildUrl(request, "/main") %>" method="post">
                 <input type="hidden" name="operation" value="insertParticipant">
-                <button class="" type="submit">
-                  John Doe</button>
+                <p><button class="btn btn-primary btn-lg btn-block" type="submit">
+                <span class="glyphicon glyphicon-user"></span> John Doe <span class="glyphicon glyphicon-share"style="display:none;"></span></button></p>
         </form>
     </div>
  </div>
