@@ -471,7 +471,7 @@ public class MainServlet extends HttpServlet {
         List<MenuValue> menuValueList = new ArrayList<MenuValue>();
 
         menuValueList.add(new MenuValue().setIconUrl(checkIcon)
-                .setDisplayName("Sign Off"));
+                .setDisplayName("Check"));
         checkMenuItem.setValues(menuValueList);
         
         // Built in actions
@@ -517,7 +517,7 @@ public class MainServlet extends HttpServlet {
         List<MenuValue> menuValueList = new ArrayList<MenuValue>();
 
         menuValueList.add(new MenuValue().setIconUrl(checkIcon)
-                .setDisplayName("Sign Off"));
+                .setDisplayName("Check"));
         checkMenuItem.setValues(menuValueList);
         
         // Built in actions
@@ -563,7 +563,7 @@ public class MainServlet extends HttpServlet {
         List<MenuValue> menuValueList = new ArrayList<MenuValue>();
 
         menuValueList.add(new MenuValue().setIconUrl(checkIcon)
-                .setDisplayName("Sign Off"));
+                .setDisplayName("Check"));
         checkMenuItem.setValues(menuValueList);
         
         // Built in actions
