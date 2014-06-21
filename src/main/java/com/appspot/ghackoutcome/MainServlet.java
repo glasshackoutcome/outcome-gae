@@ -30,6 +30,13 @@ import java.util.logging.Logger;
  */
 public class MainServlet extends HttpServlet {
 
+	private static final String SAFETY_CARD = "safety";
+	private static final String METHOD3_CARD = "method3";
+	private static final String METHOD2_CARD = "method2";
+	private static final String METHOD1_CARD = "method1";
+	private static final String INFO_CARD = "info";
+	private static final String COVER_CARD = "cover";
+
 	/**
 	 * Private class to process batch request results.
 	 * <p/>
@@ -119,7 +126,13 @@ public class MainServlet extends HttpServlet {
 			for (Participant p : allParticipants) {
 				if (req.getParameter("pid").equals(
 						p.getFirstName() + "-" + p.getLastName())) {
-					makeBundle(credential, req.getParameter("pid"), p);
+					//DEBUG deleteAll(credential, req.getParameter("pid"));
+					
+					if(exists(credential, req.getParameter("pid"))){
+						updateBundle(credential, req.getParameter("pid"), p);
+					} else {
+						insertBundle(credential, req.getParameter("pid"), p);
+					}
 				}
 			}
 
@@ -275,7 +288,7 @@ public class MainServlet extends HttpServlet {
 		WebUtil.setFlash(req, message);
 		res.sendRedirect(WebUtil.buildUrl(req, "/"));
 	}
-
+	
 	/**
 	 * Make the bundle of timeline items.
 	 * 
@@ -284,56 +297,124 @@ public class MainServlet extends HttpServlet {
 	 * @param p
 	 * @throws IOException
 	 */
-	public void makeBundle(Credential credential, String pid, Participant p) throws IOException{
+	public void insertBundle(Credential credential, String pid, Participant p) throws IOException{
         LOG.fine("Inserting Participant Timeline Items Bundle");
         
-    	List<TimelineItem> timelineList = new ArrayList<TimelineItem>();
-    	
+    	// Insert in right order
+        MirrorClient.insertTimelineItem(credential, createSafetyCard(credential, pid, p));
+        MirrorClient.insertTimelineItem(credential, createMethodThreeCard(credential, pid, p));
+        MirrorClient.insertTimelineItem(credential, createMethodTwoCard(credential, pid, p));
+        MirrorClient.insertTimelineItem(credential, createMethodOneCard(credential, pid, p));
+        MirrorClient.insertTimelineItem(credential, createInfoCard(credential, pid, p));
+        MirrorClient.insertTimelineItem(credential, createCoverCard(credential, pid, p));
+    }
+
+	private void updateBundle(Credential credential, String pid,
+			Participant p) throws IOException{
+		// See if any cards of the bundle id exist.
+		LOG.fine("Exist");
+		
+		TimelineListResponse resp = MirrorClient.listItemsBundle(credential, pid);
+		
+		for (TimelineItem item: resp.getItems()){
+			switch (item.getSourceItemId()) {
+			case COVER_CARD:
+				MirrorClient.updateTimelineItem(credential, createCoverCard(credential, pid, p), item.getId());
+				break;
+
+			case INFO_CARD:
+				MirrorClient.updateTimelineItem(credential, createInfoCard(credential, pid, p), item.getId());
+				break;
+
+			case METHOD1_CARD:
+				MirrorClient.updateTimelineItem(credential, createMethodOneCard(credential, pid, p), item.getId());
+				break;
+
+			case METHOD2_CARD:
+				MirrorClient.updateTimelineItem(credential, createMethodTwoCard(credential, pid, p), item.getId());
+				break;
+
+			case METHOD3_CARD:
+				MirrorClient.updateTimelineItem(credential, createMethodThreeCard(credential, pid, p), item.getId());
+				break;
+
+			case SAFETY_CARD:
+				MirrorClient.updateTimelineItem(credential, createSafetyCard(credential, pid, p), item.getId());
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+	}
+
+	private boolean exists(Credential credential, String pid) throws IOException {
+		// See if any cards of the bundle id exist.
+		LOG.fine("Exist");
+		
+		TimelineListResponse resp = MirrorClient.listItemsBundle(credential, pid);
+		
+		return !resp.getItems().isEmpty();
+	}
+
+	private void deleteAll(Credential credential, String pid) throws IOException{
+
+		// Delete all timeline items with our bundle id
+		LOG.fine("Deleting Timeline Items");
+		
+		TimelineListResponse resp = MirrorClient.listItemsBundle(credential, pid);
+		
+		for (TimelineItem item: resp.getItems()){
+			MirrorClient.deleteTimelineItem(credential,
+					item.getId());
+		}
+	}
+
+
+	private TimelineItem createCoverCard(Credential credential, String pid, Participant p) throws IOException{
+
     	TimelineItem cover = new TimelineItem();
-    	TimelineItem info = new TimelineItem();
-    	TimelineItem method1 = new TimelineItem();
-    	TimelineItem method2 = new TimelineItem();
-    	TimelineItem method3 = new TimelineItem();
-    	TimelineItem safety = new TimelineItem();
 
     	//Bundle uses same pid as id
     	cover.setBundleId(pid);
-    	info.setBundleId(pid);
-    	method1.setBundleId(pid);
-    	method2.setBundleId(pid);
-    	method3.setBundleId(pid);
-    	safety.setBundleId(pid);
 
     	//Make the cover of the bundle
     	cover.setIsBundleCover(true);
+
+        // Triggers an audible tone when the timeline item is received
+        cover.setNotification(new NotificationConfig().setLevel("DEFAULT"));
+
+        //Set templates and vars
+    	cover.setHtml(CardUtil.getCardTemplate("participant_cover.html", p.getMap()));
+
+        //Menu items
+        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        // Built in actions
+        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+
+        //Place menulist in the item
+        cover.setMenuItems(menuItemList);
+        
+        //Type
+        cover.setSourceItemId(COVER_CARD);
+        
+        return cover;
+	}
+
+	private TimelineItem createInfoCard(Credential credential, String pid, Participant p) throws IOException{
+
+    	TimelineItem info = new TimelineItem();
+
+    	//Bundle uses same pid as id
+    	info.setBundleId(pid);
     	
     	//Set readaloud
     	info.setSpeakableText(p.getValuedOutcome());
 
-        // Triggers an audible tone when the timeline item is received
-        cover.setNotification(new NotificationConfig().setLevel("DEFAULT"));
-        
-        //Some special maps for the methods
-        Map<String, String> methodOne = new HashMap<String, String>();
-        methodOne.put("methodText", p.getMethodOne());
-        methodOne.put("lastCompleteDate", "never");
-
-        Map<String, String> methodTwo = new HashMap<String, String>();
-        methodTwo.put("methodText", p.getMethodTwo());
-        methodTwo.put("lastCompleteDate", "never");
-        
-        Map<String, String> methodThree = new HashMap<String, String>();
-        methodThree.put("methodText", p.getMethodThree());
-        methodThree.put("lastCompleteDate", "never");
-        
         //Set templates and vars
-    	cover.setHtml(CardUtil.getCardTemplate("participant_cover.html", p.getMap()));
     	info.setHtml(CardUtil.getCardTemplate("participant_card.html", p.getMap()));
-    	method1.setHtml(CardUtil.getCardTemplate("participant_method.html", methodOne));
-    	method2.setHtml(CardUtil.getCardTemplate("participant_method.html", methodTwo));
-    	method3.setHtml(CardUtil.getCardTemplate("participant_method.html", methodThree));
-    	safety.setHtml(CardUtil.getCardTemplate("participant_alerts.html", p.getMap()));
-        
+
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
         // Built in actions
@@ -341,13 +422,121 @@ public class MainServlet extends HttpServlet {
 
         //Place menulist in the item
         info.setMenuItems(menuItemList);
+        
+        //Type
+        info.setSourceItemId(INFO_CARD);
+        
+        return info;
+	}
+	
+	private TimelineItem createMethodOneCard(Credential credential, String pid, Participant p) throws IOException{
 
-    	// Insert in right order
-        MirrorClient.insertTimelineItem(credential, safety);
-        MirrorClient.insertTimelineItem(credential, method3);
-        MirrorClient.insertTimelineItem(credential, method2);
-        MirrorClient.insertTimelineItem(credential, method1);
-        MirrorClient.insertTimelineItem(credential, info);
-        MirrorClient.insertTimelineItem(credential, cover);
-    }
+    	TimelineItem method1 = new TimelineItem();
+
+    	//Bundle uses same pid as id
+    	method1.setBundleId(pid);
+
+        //Some special maps for the methods
+        Map<String, String> methodOne = new HashMap<String, String>();
+        methodOne.put("methodText", p.getMethodOne());
+        methodOne.put("lastCompleteDate", "never");
+        
+        //Set templates and vars
+    	method1.setHtml(CardUtil.getCardTemplate("participant_method.html", methodOne));
+
+        //Menu items
+        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        // Built in actions
+        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+
+        //Place menulist in the item
+        method1.setMenuItems(menuItemList);
+
+        //Type
+        method1.setSourceItemId(METHOD1_CARD);
+        
+        return method1;
+	}
+	
+	private TimelineItem createMethodTwoCard(Credential credential, String pid, Participant p) throws IOException{
+
+    	TimelineItem method2 = new TimelineItem();
+
+    	//Bundle uses same pid as id
+    	method2.setBundleId(pid);
+
+        //Some special maps for the methods
+        Map<String, String> methodTwo = new HashMap<String, String>();
+        methodTwo.put("methodText", p.getMethodTwo());
+        methodTwo.put("lastCompleteDate", "never");
+        
+        //Set templates and vars
+    	method2.setHtml(CardUtil.getCardTemplate("participant_method.html", methodTwo));
+
+        //Menu items
+        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        // Built in actions
+        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+
+        //Place menulist in the item
+        method2.setMenuItems(menuItemList);
+        
+        //Type
+        method2.setSourceItemId(METHOD2_CARD);
+        
+        return method2;
+	}
+	
+	private TimelineItem createMethodThreeCard(Credential credential, String pid, Participant p) throws IOException{
+
+    	TimelineItem method3 = new TimelineItem();
+
+    	//Bundle uses same pid as id
+    	method3.setBundleId(pid);
+
+        //Some special maps for the methods
+        Map<String, String> methodThree = new HashMap<String, String>();
+        methodThree.put("methodText", p.getMethodThree());
+        methodThree.put("lastCompleteDate", "never");
+        
+        //Set templates and vars
+    	method3.setHtml(CardUtil.getCardTemplate("participant_method.html", methodThree));
+
+        //Menu items
+        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        // Built in actions
+        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+
+        //Place menulist in the item
+        method3.setMenuItems(menuItemList);
+        
+        //Type
+        method3.setSourceItemId(METHOD3_CARD);
+        
+        return method3;
+	}
+
+	private TimelineItem createSafetyCard(Credential credential, String pid, Participant p) throws IOException{
+
+    	TimelineItem safety = new TimelineItem();
+
+    	//Bundle uses same pid as id
+    	safety.setBundleId(pid);
+
+        //Set templates and vars
+    	safety.setHtml(CardUtil.getCardTemplate("participant_alerts.html", p.getMap()));
+
+        //Menu items
+        List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        // Built in actions
+        //menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
+
+        //Place menulist in the item
+        safety.setMenuItems(menuItemList);
+        
+        //Type
+        safety.setSourceItemId(SAFETY_CARD);
+        
+        return safety;
+	}
 }
