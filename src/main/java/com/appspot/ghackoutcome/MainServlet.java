@@ -126,7 +126,7 @@ public class MainServlet extends HttpServlet {
 			List<Participant> allParticipants = ParticipantMocker.getMockList();
 			
 			//TODO: change icon
-			checkIcon = WebUtil.buildUrl(req, "/static/images/send_to_glass_64x64.png");
+			checkIcon = WebUtil.buildUrl(req, "/static/images/WhiteCheck.png");
 
 			for (Participant p : allParticipants) {
 				if (req.getParameter("pid").equals(
