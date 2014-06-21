@@ -1,5 +1,7 @@
 package com.appspot.ghackoutcome;
 
+import com.appspot.ghackoutcome.dao.Participant;
+import com.appspot.ghackoutcome.dao.ParticipantMocker;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.logging.Logger;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -138,6 +141,21 @@ public class NotifyServlet extends HttpServlet {
             new MenuItem().setAction("DELETE")));
 
         mirrorClient.timeline().update(timelineItem.getId(), timelineItem).execute();
+        
+        
+        
+        
+
+      } else if (notification.getUserActions().contains(new UserAction().setType("CUSTOM").setPayload("check1"))) {
+        LOG.info("It was a check menu item. Processing it.");
+
+		for (Participant p : Singleton.getInstance().allParticipants) {
+			if (p.getFirstName().equals("John")) {
+				p.setMethodOneCompleted(true);
+				MainServlet.updateBundle(credential, p.getFirstName() + "-" + p.getLastName()+"new2", p);
+			}
+		}
+        
       } else {
         LOG.warning("I don't know what to do with this notification, so I'm ignoring it.");
       }

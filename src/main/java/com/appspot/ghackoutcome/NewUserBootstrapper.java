@@ -1,18 +1,17 @@
 package com.appspot.ghackoutcome;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.services.mirror.model.Command;
-import com.google.api.services.mirror.model.Contact;
-import com.google.api.services.mirror.model.NotificationConfig;
-import com.google.api.services.mirror.model.Subscription;
-import com.google.api.services.mirror.model.TimelineItem;
-import com.google.common.collect.Lists;
-
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.appspot.ghackoutcome.dao.ParticipantMocker;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.services.mirror.model.Command;
+import com.google.api.services.mirror.model.Contact;
+import com.google.api.services.mirror.model.Subscription;
+import com.google.common.collect.Lists;
 
 /**
  * Utility functions used when users first authenticate with this service
@@ -55,6 +54,10 @@ public class NewUserBootstrapper {
       LOG.warning("Failed to create timeline subscription. Might be running on "
           + "localhost. Details:" + e.getDetails().toPrettyString());
     }
+    
+    
+    //Init data
+	Singleton.getInstance().allParticipants = ParticipantMocker.getMockList();
 /*
     // Send welcome timeline item
     TimelineItem timelineItem = new TimelineItem();

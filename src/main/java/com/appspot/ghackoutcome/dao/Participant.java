@@ -149,6 +149,14 @@ public class Participant implements Serializable{
         return this;
     }
 
+    public int getCount(){
+    	int i = 0;
+    	if(isMethodOneCompleted()) i++;
+    	if(isMethodTwoCompleted()) i++;
+    	if(isMethodThreeCompleted()) i++;
+    	return i;
+    }
+    
     /**
      * Creates a hashmap to be used for substitution.
      * @return hashmap of variables to be replaced in template
@@ -166,6 +174,7 @@ public class Participant implements Serializable{
         ret.put("emergDial", getEmergDial());
         ret.put("emergName", getEmergName());
         ret.put("emergInfo", getEmergInfo());
+        ret.put("count", getCount()+"");
         return ret;
     }
 }

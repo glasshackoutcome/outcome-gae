@@ -37,7 +37,6 @@ public class MainServlet extends HttpServlet {
 	private static final String INFO_CARD = "info";
 	private static final String COVER_CARD = "cover";
 	
-	private String checkIcon;
 
 	/**
 	 * Private class to process batch request results.
@@ -123,12 +122,11 @@ public class MainServlet extends HttpServlet {
 			
 		} else if (req.getParameter("operation").equals("insertParticipant")) {
 			LOG.fine("Inserting Participant Timeline Item");
-			List<Participant> allParticipants = ParticipantMocker.getMockList();
 			
 			//TODO: change icon
-			checkIcon = WebUtil.buildUrl(req, "/static/images/WhiteCheck.png");
+			Singleton.getInstance().checkIcon = WebUtil.buildUrl(req, "/static/images/WhiteCheck.png");
 
-			for (Participant p : allParticipants) {
+			for (Participant p : Singleton.getInstance().allParticipants) {
 				if (req.getParameter("pid").equals(
 						p.getFirstName() + "-" + p.getLastName())) {
 					//DEBUG deleteAll(credential, req.getParameter("pid"));
@@ -299,7 +297,7 @@ public class MainServlet extends HttpServlet {
 	 * @return
 	 */
 	private String getBundleId(HttpServletRequest req) {
-		return req.getParameter("pid") + "new";
+		return req.getParameter("pid") + "new2";
 	}
 	
 	/**
@@ -322,7 +320,7 @@ public class MainServlet extends HttpServlet {
         MirrorClient.insertTimelineItem(credential, createCoverCard(credential, pid, p));
     }
 
-	private void updateBundle(Credential credential, String pid,
+	public static void updateBundle(Credential credential, String pid,
 			Participant p) throws IOException{
 		// See if any cards of the bundle id exist.
 		LOG.fine("Exist");
@@ -392,7 +390,7 @@ public class MainServlet extends HttpServlet {
 	}
 
 
-	private TimelineItem createCoverCard(Credential credential, String pid, Participant p) throws IOException{
+	public static TimelineItem createCoverCard(Credential credential, String pid, Participant p) throws IOException{
 
     	TimelineItem cover = new TimelineItem();
 
@@ -414,7 +412,7 @@ public class MainServlet extends HttpServlet {
         return cover;
 	}
 
-	private TimelineItem createInfoCard(Credential credential, String pid, Participant p) throws IOException{
+	public static TimelineItem createInfoCard(Credential credential, String pid, Participant p) throws IOException{
 
     	TimelineItem info = new TimelineItem();
 
@@ -443,7 +441,7 @@ public class MainServlet extends HttpServlet {
         return info;
 	}
 	
-	private TimelineItem createMethodOneCard(Credential credential, String pid, Participant p) throws IOException{
+	public static TimelineItem createMethodOneCard(Credential credential, String pid, Participant p) throws IOException{
 
     	TimelineItem method1 = new TimelineItem();
 
@@ -470,7 +468,7 @@ public class MainServlet extends HttpServlet {
         checkMenuItem.setId("check1");
         List<MenuValue> menuValueList = new ArrayList<MenuValue>();
 
-        menuValueList.add(new MenuValue().setIconUrl(checkIcon)
+        menuValueList.add(new MenuValue().setIconUrl(Singleton.getInstance().checkIcon)
                 .setDisplayName("Check"));
         checkMenuItem.setValues(menuValueList);
         
@@ -489,7 +487,7 @@ public class MainServlet extends HttpServlet {
         return method1;
 	}
 	
-	private TimelineItem createMethodTwoCard(Credential credential, String pid, Participant p) throws IOException{
+	public static TimelineItem createMethodTwoCard(Credential credential, String pid, Participant p) throws IOException{
 
     	TimelineItem method2 = new TimelineItem();
 
@@ -516,7 +514,7 @@ public class MainServlet extends HttpServlet {
         checkMenuItem.setId("check2");
         List<MenuValue> menuValueList = new ArrayList<MenuValue>();
 
-        menuValueList.add(new MenuValue().setIconUrl(checkIcon)
+        menuValueList.add(new MenuValue().setIconUrl(Singleton.getInstance().checkIcon)
                 .setDisplayName("Check"));
         checkMenuItem.setValues(menuValueList);
         
@@ -535,7 +533,7 @@ public class MainServlet extends HttpServlet {
         return method2;
 	}
 	
-	private TimelineItem createMethodThreeCard(Credential credential, String pid, Participant p) throws IOException{
+	public static TimelineItem createMethodThreeCard(Credential credential, String pid, Participant p) throws IOException{
 
     	TimelineItem method3 = new TimelineItem();
 
@@ -562,7 +560,7 @@ public class MainServlet extends HttpServlet {
         checkMenuItem.setId("check3");
         List<MenuValue> menuValueList = new ArrayList<MenuValue>();
 
-        menuValueList.add(new MenuValue().setIconUrl(checkIcon)
+        menuValueList.add(new MenuValue().setIconUrl(Singleton.getInstance().checkIcon)
                 .setDisplayName("Check"));
         checkMenuItem.setValues(menuValueList);
         
@@ -590,7 +588,7 @@ public class MainServlet extends HttpServlet {
         return method3;
 	}
 
-	private TimelineItem createSafetyCard(Credential credential, String pid, Participant p) throws IOException{
+	public static TimelineItem createSafetyCard(Credential credential, String pid, Participant p) throws IOException{
 
     	TimelineItem safety = new TimelineItem();
 
