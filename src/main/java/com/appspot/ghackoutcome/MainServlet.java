@@ -72,9 +72,6 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        String methodIDs[] = {"First Method","Second Method","Third Method","Fourth Method","Fifth Method"};
-        int i = 0;
-
         String userId = AuthUtil.getUserId(req);
         Credential credential = AuthUtil.newAuthorizationCodeFlow().loadCredential(userId);
         String message = "";
@@ -92,6 +89,48 @@ public class MainServlet extends HttpServlet {
                 message = "Failed to subscribe. Check your log for details";
             }
 
+        } else if (req.getParameter("operation").equals("deleteSubscription")) {
+
+            // subscribe (only works deployed to production)
+            MirrorClient.deleteSubscription(credential, req.getParameter("subscriptionId"));
+
+            message = "Application has been unsubscribed.";
+
+        } else if (req.getParameter("operation").equals("insertParticipant")) {
+            LOG.fine("Inserting Participant Timeline Item");
+            List<Participant> allParticipants = ParticipantMocker.getMockList();
+
+            TimelineItem timelineItem = new TimelineItem();
+            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", allParticipants.get(0).getMap()));
+
+            // Triggers an audible tone when the timeline item is received
+            timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
+
+            MirrorClient.insertTimelineItem(credential, timelineItem);
+
+            message = "A participant timeline item has been inserted.";
+
+        } else if (req.getParameter("operation").equals("insertItem")) {
+            LOG.fine("Inserting Timeline Item");
+            TimelineItem timelineItem = new TimelineItem();
+
+            if (req.getParameter("message") != null) {
+                timelineItem.setText(req.getParameter("message"));
+            }
+
+            // Triggers an audible tone when the timeline item is received
+            timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
+
+            if (req.getParameter("imageUrl") != null) {
+                // Attach an image, if we have one
+                URL url = new URL(req.getParameter("imageUrl"));
+                String contentType = req.getParameter("contentType");
+                MirrorClient.insertTimelineItem(credential, timelineItem, contentType, url.openStream());
+            } else {
+                MirrorClient.insertTimelineItem(credential, timelineItem);
+            }
+
+            message = "A timeline item has been inserted.";
 
         } else if (req.getParameter("operation").equals("insertPaginatedItem")) {
             LOG.fine("Inserting Timeline Item");
@@ -110,94 +149,28 @@ public class MainServlet extends HttpServlet {
 
             message = "A timeline item has been inserted.";
 
-
-
-            /*************************TNM******************************/
-
-
-        } else if (req.getParameter("operation").equals("insertItemWithValuedOutcome")) {
-            LOG.fine("Inserting Item into Bundle");
-
+        } else if (req.getParameter("operation").equals("insertItemWithAction")) {
+            LOG.fine("Inserting Timeline Item");
             TimelineItem timelineItem = new TimelineItem();
-            //timelineItem.setText("Item Text");
-            //TODO: set Actual Bundle ID
-            timelineItem.setBundleId("New Bundle");
-            timelineItem.setId("ValuedOutcome Item");
+            timelineItem.setText("Tell me what you had for lunch :)");
 
-            //Create the menu list
             List<MenuItem> menuItemList = new ArrayList<MenuItem>();
             // Built in actions
-            menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
-
-            //Place menulist in the item
-            timelineItem.setMenuItems(menuItemList);
-            timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
-
-            MirrorClient.insertTimelineItem(credential, timelineItem);
-
-            message = "A timeline item with actions has been inserted.";
-
-
-        } else if (req.getParameter("operation").equals("insertItemWithMethod")) {
-            LOG.fine("Inserting Item into Bundle");
-
-            TimelineItem timelineItem = new TimelineItem();
-            //timelineItem.setText("Item Text");
-            //TODO: set Actual Bundle ID
-            timelineItem.setBundleId("New Bundle");
-            // increment the method item id with each new method item, up to 5
-            timelineItem.setId(methodIDs[i]);
-            i++;
-
-            //Create the menu list
-            List<MenuItem> menuItemList = new ArrayList<MenuItem>();
-            // Built in actions
+            menuItemList.add(new MenuItem().setAction("REPLY"));
             menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
 
             // And custom actions
             List<MenuValue> menuValues = new ArrayList<MenuValue>();
-            //TODO: change icon
-            menuValues.add(new MenuValue().setIconUrl(WebUtil.buildUrl(req, "/static/images/yelloCheck.png"))
-                    .setDisplayName("Sign Off"));
-            menuItemList.add(new MenuItem().setValues(menuValues).setId("checkmark").setAction("CUSTOM"));
+            menuValues.add(new MenuValue().setIconUrl(WebUtil.buildUrl(req, "/static/images/drill.png"))
+                    .setDisplayName("Drill In"));
+            menuItemList.add(new MenuItem().setValues(menuValues).setId("drill").setAction("CUSTOM"));
 
-            //Place menulist in the item
             timelineItem.setMenuItems(menuItemList);
             timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
 
             MirrorClient.insertTimelineItem(credential, timelineItem);
 
             message = "A timeline item with actions has been inserted.";
-
-        } else if (req.getParameter("operation").equals("insertSafetyItem")) {
-            LOG.fine("Inserting Safety Item into Bundle");
-
-            TimelineItem timelineItem = new TimelineItem();
-            //timelineItem.setText("Item Text");
-            //TODO: set Actual Bundle ID
-            timelineItem.setBundleId("New Bundle");
-            timelineItem.setId("Safety Item");
-
-            //Create the menu list
-            List<MenuItem> menuItemList = new ArrayList<MenuItem>();
-            // Built in actions
-            menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
-            menuItemList.add(new MenuItem().setAction("VOICE_CALL"));
-
-            //Place menulist in the item
-            timelineItem.setMenuItems(menuItemList);
-            timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
-
-            MirrorClient.insertTimelineItem(credential, timelineItem);
-
-            message = "A timeline item with actions has been inserted.";
-
-
-
-            /*******************************************************/
-
-
-
 
         } else if (req.getParameter("operation").equals("insertContact")) {
             if (req.getParameter("iconUrl") == null || req.getParameter("name") == null) {
