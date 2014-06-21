@@ -19,7 +19,7 @@ public class CardUtil {
      *
      * @param fileName
      * @param values
-     * @return
+     * @return final string
      * @throws IOException
      */
     public static String getCardTemplate(String fileName, Map values) throws IOException {
@@ -27,17 +27,21 @@ public class CardUtil {
         File templateFile = new File("./src/main/resources/cards/" + fileName);
         try {
             templateFile = new File(resource.toURI());
-            //LOG.info("Able to find oauth properties from file.");
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            //LOG.info(e.toString());
-            //LOG.info("Using default source path.");
         }
         FileInputStream is = new FileInputStream(templateFile);
         String content = IOUtils.toString(is);
         return replaceVariables(content, values);
     }
 
+    /**
+     * Do the actual substitution
+     *
+     * @param content
+     * @param values
+     * @return final string
+     */
     private static String replaceVariables(String content, Map values) {
         StrSubstitutor sub = new StrSubstitutor(values);
         return sub.replace(content);

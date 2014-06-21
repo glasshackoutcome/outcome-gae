@@ -149,6 +149,10 @@ public class Participant implements Serializable{
         return this;
     }
 
+    /**
+     * Creates a hashmap to be used for substitution.
+     * @return hashmap of variables to be replaced in template
+     */
     public Map<String, String> getMap() {
         Map<String, String> ret = new HashMap<String, String>();
         ret.put("lastName", getLastName());
