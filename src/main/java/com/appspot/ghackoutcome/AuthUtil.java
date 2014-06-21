@@ -37,6 +37,7 @@ public class AuthUtil {
         if(participantsList == null) {
             participantsList = ParticipantMocker.getMockList();
         }
+        // Add it to session of actual request to access it scoped in jsp
         HttpSession session = request.getSession();
         session.setAttribute("participantsListTest", participantsList);
         return participantsList;
