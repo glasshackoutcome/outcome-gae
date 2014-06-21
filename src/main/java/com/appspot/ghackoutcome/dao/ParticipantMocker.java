@@ -17,7 +17,7 @@ public class ParticipantMocker {
         URL resource = CardUtil.class.getResource("/mockdata/base.csv");
         BufferedReader br = null;
         String line = "";
-        String cvsSplitBy = ",";
+        String cvsSplitBy = "\t";
         List<Participant> ret = new ArrayList<Participant>();
         try {
 
