@@ -100,12 +100,8 @@ public class MainServlet extends HttpServlet {
             LOG.fine("Inserting Participant Timeline Item");
             List<Participant> allParticipants = ParticipantMocker.getMockList();
 
-            Map<String, String> testMap = new HashMap<String, String>();
-            testMap.put("photoURI", allParticipants.get(0).getPhotoURI());
-            testMap.put("firstName", allParticipants.get(0).getFirstName());
-            testMap.put("lastName", allParticipants.get(0).getLastName());
             TimelineItem timelineItem = new TimelineItem();
-            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", testMap));
+            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", allParticipants.get(0).getMap()));
 
             // Triggers an audible tone when the timeline item is received
             timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
