@@ -70,7 +70,7 @@ limitations under the License.
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#"><img src="http://static.squarespace.com/static/53a5bdede4b0cd7da76bbacb/t/53a5ce85e4b0b6428d0d13e0/1403383346236/?format=1500w"/></a>
+            <a class="brand text-center" href="#"><img class="img-responsive" src="http://static.squarespace.com/static/53a5bdede4b0cd7da76bbacb/t/53a5ce85e4b0b6428d0d13e0/1403383346236/?format=1500w"/></a>
         </div>
     </div>
 </div>
@@ -82,10 +82,14 @@ limitations under the License.
     </div>
     <% } %>
     <div class="row">
+    <div class="row">
         <p class="lead">
-            Please select a participant to work with.
+            Please select a participant to work with:
         </p>
+    </div>
         <% AuthUtil.getParticipants(request); %>
+        
+       
         <c:forEach var="item" items="${participantsListTest}">
             <form action="<%= WebUtil.buildUrl(request, "/main") %>" method="post">
                 <input type="hidden" name="operation" value="insertParticipant">
