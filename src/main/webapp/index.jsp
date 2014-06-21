@@ -70,7 +70,7 @@ limitations under the License.
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#">OUTCOME | <em>FOR GLASS</em></a>
+            <a class="brand" href="#"><img src="http://static.squarespace.com/static/53a5bdede4b0cd7da76bbacb/t/53a5ce85e4b0b6428d0d13e0/1403383346236/?format=1500w"/></a>
         </div>
     </div>
 </div>
