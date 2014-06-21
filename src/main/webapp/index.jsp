@@ -24,8 +24,10 @@ limitations under the License.
 <%@ page import="com.appspot.ghackoutcome.MainServlet" %>
 <%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page import="com.appspot.ghackoutcome.AuthUtil" %>
+<%@ page import="com.appspot.ghackoutcome.dao.Participant" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!doctype html>
 <%
@@ -37,6 +39,8 @@ limitations under the License.
   Contact contact = MirrorClient.getContact(credential, MainServlet.CONTACT_ID);
 
   List<TimelineItem> timelineItems = MirrorClient.listItems(credential, 3L).getItems();
+
+
 
 
   List<Subscription> subscriptions = MirrorClient.listSubscriptions(credential).getItems();
@@ -76,18 +80,24 @@ limitations under the License.
 </div>
  <div class="container">
   <% String flash = WebUtil.getClearFlash(request);
+
     if (flash != null) { %>
   <div class="alert alert-info"><%= StringEscapeUtils.escapeHtml4(flash) %></div>
   <% } %>
   <div class="row">
    <p class="lead">
-   Please select a participant to work with.
+   Please select a participant to work with. Item:
    </p>
-        <form action="<%= WebUtil.buildUrl(request, "/main") %>" method="post">
-                <input type="hidden" name="operation" value="insertParticipant">
-                <p><button class="btn btn-primary btn-lg btn-block" type="submit">
-                John Doe</button></p>
-        </form>
+      <% AuthUtil.getParticipants(request); %>
+      <c:forEach var="item" items="${participantsListTest}">
+                                 Item: <c:out value="${item}" />
+                                 <form action="<%= WebUtil.buildUrl(request, "/main") %>" method="post">
+                                                 <input type="hidden" name="operation" value="insertParticipant">
+                                                 <p><button class="btn btn-primary btn-lg btn-block" type="submit">
+                                                 ${item.firstName} ${item.lastName}</button></p>
+                                         </form>
+                             </c:forEach>
+
     </div>
  </div>
 </body>

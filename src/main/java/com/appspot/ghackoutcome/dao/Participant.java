@@ -1,12 +1,13 @@
 package com.appspot.ghackoutcome.dao;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by rac on 21.06.14.
  */
-public class Participant {
+public class Participant implements Serializable{
     private String firstName;
     private String lastName;
     private String photoURI;

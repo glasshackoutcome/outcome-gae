@@ -5,16 +5,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.appspot.ghackoutcome.dao.Participant;
+import com.appspot.ghackoutcome.dao.ParticipantMocker;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.StoredCredential;
@@ -32,6 +31,16 @@ import com.google.api.client.util.store.DataStore;
  */
 public class AuthUtil {
   private static final Logger LOG = Logger.getLogger(AuthUtil.class.getSimpleName());
+    public static List<Participant> participantsList;
+
+    public static List<Participant> getParticipants(HttpServletRequest request) {
+        if(participantsList == null) {
+            participantsList = ParticipantMocker.getMockList();
+        }
+        HttpSession session = request.getSession();
+        session.setAttribute("participantsListTest", participantsList);
+        return participantsList;
+    }
 
   public static DataStore<StoredCredential>  store;
   static {

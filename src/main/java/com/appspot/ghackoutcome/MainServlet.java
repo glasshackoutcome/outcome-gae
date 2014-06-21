@@ -66,6 +66,7 @@ public class MainServlet extends HttpServlet {
                     + "For more cat maintenance tips, tap to view the website!</p>"
                     + "</article>";
 
+
     /**
      * Do stuff when buttons on index.jsp are clicked
      */
