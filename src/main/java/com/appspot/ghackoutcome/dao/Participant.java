@@ -1,6 +1,7 @@
 package com.appspot.ghackoutcome.dao;
 
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rac on 21.06.14.
@@ -145,5 +146,21 @@ public class Participant {
     public Participant setMethodThreeCompleted(boolean methodThreeCompleted) {
         this.methodThreeCompleted = methodThreeCompleted;
         return this;
+    }
+
+    public Map<String, String> getMap() {
+        Map<String, String> ret = new HashMap<String, String>();
+        ret.put("lastName", getLastName());
+        ret.put("firstName", getFirstName());
+        ret.put("photoURI", getPhotoURI());
+        ret.put("programName", getProgramName());
+        ret.put("valuedOutcome", getValuedOutcome());
+        ret.put("methodOne", getMethodOne());
+        ret.put("methodTwo", getMethodTwo());
+        ret.put("methodThree", getMethodThree());
+        ret.put("emergDial", getEmergDial());
+        ret.put("emergName", getEmergName());
+        ret.put("emergInfo", getEmergInfo());
+        return ret;
     }
 }
