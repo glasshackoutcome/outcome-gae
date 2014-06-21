@@ -104,6 +104,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>*.properties</include>
+                    <include>**/*.html</include>
                 </includes>
             </resource>
         </resources>

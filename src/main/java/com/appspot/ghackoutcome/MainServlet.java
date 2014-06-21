@@ -64,8 +64,6 @@ public class MainServlet extends HttpServlet {
                     + "For more cat maintenance tips, tap to view the website!</p>"
                     + "</article>";
 
-    private CardUtil cardUtil = new CardUtil();
-
     /**
      * Do stuff when buttons on index.jsp are clicked
      */
@@ -103,7 +101,7 @@ public class MainServlet extends HttpServlet {
             testMap.put("firstName", "Jon");
             testMap.put("lastName", "Doe");
             TimelineItem timelineItem = new TimelineItem();
-            timelineItem.setHtml(cardUtil.getCardTemplate("participant_cover.html", testMap));
+            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", testMap));
 
             // Triggers an audible tone when the timeline item is received
             timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
