@@ -97,13 +97,17 @@ public class MainServlet extends HttpServlet {
 
             message = "Application has been unsubscribed.";
 
-        } else if (req.getParameter("operation").equals("insertParticipant")) {
+        } else if (req.getParameter("operation").equals("insertParticipant")){
             LOG.fine("Inserting Participant Timeline Item");
             List<Participant> allParticipants = ParticipantMocker.getMockList();
 
             TimelineItem timelineItem = new TimelineItem();
-            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", allParticipants.get(0).getMap()));
+            for (Participant p:allParticipants) {
+                if (req.getParameter("pid").equals(p.getFirstName()+"-"+p.getLastName())) {
+            timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", p.getMap()));
 
+            }
+            }
             // Triggers an audible tone when the timeline item is received
             timelineItem.setNotification(new NotificationConfig().setLevel("DEFAULT"));
 
