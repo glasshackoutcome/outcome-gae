@@ -105,6 +105,13 @@ public class MainServlet extends HttpServlet {
 
 			message = "Application has been unsubscribed.";
 
+			
+			
+			
+			
+			
+			
+			
 		} else if (req.getParameter("operation").equals("insertParticipant")) {
 			LOG.fine("Inserting Participant Timeline Item");
 			List<Participant> allParticipants = ParticipantMocker.getMockList();
@@ -118,6 +125,12 @@ public class MainServlet extends HttpServlet {
 
 			message = "A participant timeline item has been inserted.";
 
+			
+			
+			
+			
+			
+			
 		} else if (req.getParameter("operation").equals("insertItem")) {
 			LOG.fine("Inserting Timeline Item");
 			TimelineItem timelineItem = new TimelineItem();
@@ -263,9 +276,15 @@ public class MainServlet extends HttpServlet {
 		res.sendRedirect(WebUtil.buildUrl(req, "/"));
 	}
 
+	/**
+	 * Make the bundle of timeline items.
+	 * 
+	 * @param credential
+	 * @param pid
+	 * @param p
+	 * @throws IOException
+	 */
 	public void makeBundle(Credential credential, String pid, Participant p) throws IOException{
-
-
         LOG.fine("Inserting Participant Timeline Items Bundle");
         
     	List<TimelineItem> timelineList = new ArrayList<TimelineItem>();
@@ -277,6 +296,7 @@ public class MainServlet extends HttpServlet {
     	TimelineItem method3 = new TimelineItem();
     	TimelineItem safety = new TimelineItem();
 
+    	//Bundle uses same pid as id
     	cover.setBundleId(pid);
     	info.setBundleId(pid);
     	method1.setBundleId(pid);
@@ -289,7 +309,7 @@ public class MainServlet extends HttpServlet {
         // Triggers an audible tone when the timeline item is received
         cover.setNotification(new NotificationConfig().setLevel("DEFAULT"));
         
-
+        //Some special maps for the methods
         Map<String, String> methodOne = new HashMap<String, String>();
         methodOne.put("methodText", p.getMethodOne());
         methodOne.put("lastCompleteDate", "never");
@@ -302,6 +322,7 @@ public class MainServlet extends HttpServlet {
         methodThree.put("methodText", p.getMethodThree());
         methodThree.put("lastCompleteDate", "never");
         
+        //Set templates and vars
     	cover.setHtml(CardUtil.getCardTemplate("participant_cover.html", p.getMap()));
     	info.setHtml(CardUtil.getCardTemplate("participant_card.html", p.getMap()));
     	method1.setHtml(CardUtil.getCardTemplate("participant_method.html", methodOne));
@@ -309,12 +330,13 @@ public class MainServlet extends HttpServlet {
     	method3.setHtml(CardUtil.getCardTemplate("participant_method.html", methodThree));
     	safety.setHtml(CardUtil.getCardTemplate("participant_alerts.html", p.getMap()));
 
-        MirrorClient.insertTimelineItem(credential, cover);
-        MirrorClient.insertTimelineItem(credential, info);
-        MirrorClient.insertTimelineItem(credential, method1);
-        MirrorClient.insertTimelineItem(credential, method2);
-        MirrorClient.insertTimelineItem(credential, method3);
+    	// Insert in right order
         MirrorClient.insertTimelineItem(credential, safety);
+        MirrorClient.insertTimelineItem(credential, method3);
+        MirrorClient.insertTimelineItem(credential, method2);
+        MirrorClient.insertTimelineItem(credential, method1);
+        MirrorClient.insertTimelineItem(credential, info);
+        MirrorClient.insertTimelineItem(credential, cover);
 
     }
 }
