@@ -36,6 +36,8 @@ public class MainServlet extends HttpServlet {
 	private static final String METHOD1_CARD = "method1";
 	private static final String INFO_CARD = "info";
 	private static final String COVER_CARD = "cover";
+	
+	private String checkIcon;
 
 	/**
 	 * Private class to process batch request results.
@@ -122,6 +124,9 @@ public class MainServlet extends HttpServlet {
 		} else if (req.getParameter("operation").equals("insertParticipant")) {
 			LOG.fine("Inserting Participant Timeline Item");
 			List<Participant> allParticipants = ParticipantMocker.getMockList();
+			
+			//TODO: change icon
+			checkIcon = WebUtil.buildUrl(req, "/static/images/send_to_glass_64x64.png");
 
 			for (Participant p : allParticipants) {
 				if (req.getParameter("pid").equals(
@@ -323,8 +328,15 @@ public class MainServlet extends HttpServlet {
 		LOG.fine("Exist");
 		
 		TimelineListResponse resp = MirrorClient.listItemsBundle(credential, pid);
-		
+
+		//Reverse order of cards
+		ArrayList<TimelineItem> items = new ArrayList<TimelineItem>();
 		for (TimelineItem item: resp.getItems()){
+			items.add(0, item);
+		}
+		
+		//Update each card
+		for (TimelineItem item: items){
 			switch (item.getSourceItemId()) {
 			case COVER_CARD:
 				MirrorClient.updateTimelineItem(credential, createCoverCard(credential, pid, p), item.getId());
@@ -451,7 +463,19 @@ public class MainServlet extends HttpServlet {
 
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        
+        //Custom
+        MenuItem checkMenuItem = new MenuItem();
+        checkMenuItem.setAction("CUSTOM");
+        checkMenuItem.setId("check1");
+        List<MenuValue> menuValueList = new ArrayList<MenuValue>();
+
+        menuValueList.add(new MenuValue().setIconUrl(checkIcon)
+                .setDisplayName("Sign Off"));
+        checkMenuItem.setValues(menuValueList);
+        
         // Built in actions
+        menuItemList.add(checkMenuItem);
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
         menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
@@ -485,7 +509,19 @@ public class MainServlet extends HttpServlet {
 
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        
+        //Custom
+        MenuItem checkMenuItem = new MenuItem();
+        checkMenuItem.setAction("CUSTOM");
+        checkMenuItem.setId("check2");
+        List<MenuValue> menuValueList = new ArrayList<MenuValue>();
+
+        menuValueList.add(new MenuValue().setIconUrl(checkIcon)
+                .setDisplayName("Sign Off"));
+        checkMenuItem.setValues(menuValueList);
+        
         // Built in actions
+        menuItemList.add(checkMenuItem);
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
         menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
@@ -519,7 +555,19 @@ public class MainServlet extends HttpServlet {
 
         //Menu items
         List<MenuItem> menuItemList = new ArrayList<MenuItem>();
+        
+        //Custom
+        MenuItem checkMenuItem = new MenuItem();
+        checkMenuItem.setAction("CUSTOM");
+        checkMenuItem.setId("check3");
+        List<MenuValue> menuValueList = new ArrayList<MenuValue>();
+
+        menuValueList.add(new MenuValue().setIconUrl(checkIcon)
+                .setDisplayName("Sign Off"));
+        checkMenuItem.setValues(menuValueList);
+        
         // Built in actions
+        menuItemList.add(checkMenuItem);
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
         menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
@@ -529,6 +577,15 @@ public class MainServlet extends HttpServlet {
         
         //Type
         method3.setSourceItemId(METHOD3_CARD);
+        
+        
+/*        "action": "CUSTOM",
+        "id": "complete"
+        "values": [{
+          "displayName": "Complete",
+          "iconUrl": "http://example.com/icons/complete.png"
+        }]*/
+        		
         
         return method3;
 	}
