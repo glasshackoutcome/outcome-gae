@@ -69,6 +69,16 @@ public class MirrorClient {
   }
 
 
+
+  public static TimelineListResponse listItemsBundle(Credential credential, String bundleId)
+      throws IOException {
+    Mirror.Timeline timelineItems = getMirror(credential).timeline();
+    Mirror.Timeline.List list = timelineItems.list();
+    //list.setMaxResults(count);
+    list.setBundleId(bundleId);
+    return list.execute();
+  }
+
   /**
    * Subscribes to notifications on the user's timeline.
    */
@@ -100,6 +110,11 @@ public class MirrorClient {
       throws IOException {
     Mirror.Subscriptions subscriptions = getMirror(credential).subscriptions();
     return subscriptions.list().execute();
+  }
+
+  public static TimelineItem updateTimelineItem(Credential credential, TimelineItem item, String id)
+      throws IOException {
+    return getMirror(credential).timeline().update(id, item).execute();
   }
 
   /**
