@@ -128,10 +128,10 @@ public class MainServlet extends HttpServlet {
 						p.getFirstName() + "-" + p.getLastName())) {
 					//DEBUG deleteAll(credential, req.getParameter("pid"));
 					
-					if(exists(credential, req.getParameter("pid"))){
-						updateBundle(credential, req.getParameter("pid"), p);
+					if(exists(credential, getBundleId(req))){
+						updateBundle(credential, getBundleId(req), p);
 					} else {
-						insertBundle(credential, req.getParameter("pid"), p);
+						insertBundle(credential, getBundleId(req), p);
 					}
 				}
 			}
@@ -288,6 +288,14 @@ public class MainServlet extends HttpServlet {
 		WebUtil.setFlash(req, message);
 		res.sendRedirect(WebUtil.buildUrl(req, "/"));
 	}
+
+	/**
+	 * @param req
+	 * @return
+	 */
+	private String getBundleId(HttpServletRequest req) {
+		return req.getParameter("pid") + "new";
+	}
 	
 	/**
 	 * Make the bundle of timeline items.
@@ -412,6 +420,7 @@ public class MainServlet extends HttpServlet {
         // Built in actions
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
+        menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
 
         //Place menulist in the item
         info.setMenuItems(menuItemList);
@@ -445,6 +454,7 @@ public class MainServlet extends HttpServlet {
         // Built in actions
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
+        menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
 
         //Place menulist in the item
         method1.setMenuItems(menuItemList);
@@ -478,6 +488,7 @@ public class MainServlet extends HttpServlet {
         // Built in actions
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
+        menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
 
         //Place menulist in the item
         method2.setMenuItems(menuItemList);
@@ -511,6 +522,7 @@ public class MainServlet extends HttpServlet {
         // Built in actions
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
+        menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
 
         //Place menulist in the item
         method3.setMenuItems(menuItemList);
@@ -530,6 +542,9 @@ public class MainServlet extends HttpServlet {
     	
     	//Set readaloud
     	safety.setSpeakableText(p.getEmergInfo());
+    	
+    	//Set voice call
+    	//safety.setCreator(arg0)
 
         //Set templates and vars
     	safety.setHtml(CardUtil.getCardTemplate("participant_alerts.html", p.getMap()));
@@ -539,6 +554,9 @@ public class MainServlet extends HttpServlet {
         // Built in actions
         menuItemList.add(new MenuItem().setAction("READ_ALOUD"));
         menuItemList.add(new MenuItem().setAction("DELETE"));
+        menuItemList.add(new MenuItem().setAction("TOGGLE_PINNED"));
+        //menuItemList.add(new MenuItem().setAction("VOICE_CALL"));
+        
 
         //Place menulist in the item
         safety.setMenuItems(menuItemList);
