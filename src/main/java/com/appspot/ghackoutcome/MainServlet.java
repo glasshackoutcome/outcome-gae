@@ -323,8 +323,15 @@ public class MainServlet extends HttpServlet {
 		LOG.fine("Exist");
 		
 		TimelineListResponse resp = MirrorClient.listItemsBundle(credential, pid);
-		
+
+		//Reverse order of cards
+		ArrayList<TimelineItem> items = new ArrayList<TimelineItem>();
 		for (TimelineItem item: resp.getItems()){
+			items.add(0, item);
+		}
+		
+		//Update each card
+		for (TimelineItem item: items){
 			switch (item.getSourceItemId()) {
 			case COVER_CARD:
 				MirrorClient.updateTimelineItem(credential, createCoverCard(credential, pid, p), item.getId());
