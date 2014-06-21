@@ -1,5 +1,7 @@
 package com.appspot.ghackoutcome;
 
+import com.appspot.ghackoutcome.dao.Participant;
+import com.appspot.ghackoutcome.dao.ParticipantMocker;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.batch.BatchRequest;
 import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
@@ -96,10 +98,12 @@ public class MainServlet extends HttpServlet {
 
         } else if (req.getParameter("operation").equals("insertParticipant")) {
             LOG.fine("Inserting Participant Timeline Item");
+            List<Participant> allParticipants = ParticipantMocker.getMockList();
+
             Map<String, String> testMap = new HashMap<String, String>();
-            testMap.put("photoURI", "http://w4tr.com/glass/participant.jpg");
-            testMap.put("firstName", "Jon");
-            testMap.put("lastName", "Doe");
+            testMap.put("photoURI", allParticipants.get(0).getPhotoURI());
+            testMap.put("firstName", allParticipants.get(0).getFirstName());
+            testMap.put("lastName", allParticipants.get(0).getLastName());
             TimelineItem timelineItem = new TimelineItem();
             timelineItem.setHtml(CardUtil.getCardTemplate("participant_cover.html", testMap));
 
