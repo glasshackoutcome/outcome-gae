@@ -90,7 +90,6 @@ limitations under the License.
    </p>
       <% AuthUtil.getParticipants(request); %>
       <c:forEach var="item" items="${participantsListTest}">
-                                 Item: <c:out value="${item}" />
                                  <form action="<%= WebUtil.buildUrl(request, "/main") %>" method="post">
                                                  <input type="hidden" name="operation" value="insertParticipant">
                                                  <p><button class="btn btn-primary btn-lg btn-block" type="submit">
