@@ -117,6 +117,7 @@
                     <include>*.properties</include>
                     <include>**/*.html</include>
                     <include>**/*.csv</include>
+                    <include>**/*.tsv</include>
                 </includes>
             </resource>
         </resources>

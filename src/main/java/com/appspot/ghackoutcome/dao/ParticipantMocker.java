@@ -14,7 +14,7 @@ import java.util.List;
 public class ParticipantMocker {
 
     public static List<Participant> getMockList() {
-        URL resource = CardUtil.class.getResource("/mockdata/base.csv");
+        URL resource = CardUtil.class.getResource("/mockdata/base.tsv");
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = "\t";
